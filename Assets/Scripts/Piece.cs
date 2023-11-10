@@ -72,17 +72,14 @@ public class Piece : MonoBehaviour
 
     private void HandleMoveInputs()
     {
-        // Soft drop movement
         if (Input.GetKey(KeyCode.S))
         {
             if (Move(Vector2Int.down))
             {
-                // Update the step time to prevent double movement
                 _stepTime = Time.time + _stepDelay;
             }
         }
-
-        // Left/right movement
+        
         if (Input.GetKey(KeyCode.A))
         {
             Move(Vector2Int.left);
@@ -109,7 +106,6 @@ public class Piece : MonoBehaviour
     {
         while (Move(Vector2Int.down))
         {
-            continue;
         }
 
         Lock();
