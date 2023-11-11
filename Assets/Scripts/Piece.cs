@@ -8,14 +8,13 @@ public class Piece : MonoBehaviour
     public TetrominoData Data { get; private set; }
     public Vector3Int[] Cells { get; private set; }
     public Vector3Int Position { get; private set; }
-    
-    [SerializeField] private float _stepDelay = 1f;
-    [SerializeField] private float _moveDelay = 0.1f;
-    [SerializeField] private float _lockDelay = 0.5f;
-    [SerializeField] private float _behaviourDelay = 1f;
+
+    [SerializeField] private PieceButton _pieceButton;
+    [SerializeField] private float _stepDelay;
+    [SerializeField] private float _lockDelay;
+    [SerializeField] private float _behaviourDelay;
 
     private float _stepTime;
-    private float _moveTime;
     private float _lockTime;
     private bool _boardIsNull = true;
     private bool _isLocked;
@@ -36,7 +35,6 @@ public class Piece : MonoBehaviour
         Position = position;
 
         _stepTime = Time.time + _stepDelay;
-        _moveTime = Time.time + _moveDelay;
         _lockTime = 0f;
 
         Cells ??= new Vector3Int[data.Cells.Length];
@@ -144,11 +142,11 @@ public class Piece : MonoBehaviour
     private void Lock()
     {
         if (!_isLocked)
-        {   
+        {
             _board.Set(this);
             _board.ClearLines();
             _isLocked = true;
-            Debug.Log("Locked");
+            _pieceButton.CanSpawnNext();
         }
     }
 
@@ -170,7 +168,6 @@ public class Piece : MonoBehaviour
         if (valid)
         {
             Position = newPosition;
-            _moveTime = Time.time + _moveDelay;
             _lockTime = 0f;
         }
 
