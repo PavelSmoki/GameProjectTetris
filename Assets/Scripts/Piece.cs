@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -47,7 +48,7 @@ public class Piece : MonoBehaviour
 
     private void Update()
     {
-        if (!_boardIsNull)
+        if (!_boardIsNull && !_isLocked)
         {
             _board.Clear(this);
         }
@@ -74,13 +75,14 @@ public class Piece : MonoBehaviour
             HandleMoveInputs();
         }
 
-        if (Time.time > _stepTime)
+        if (Time.time > _stepTime && !_boardIsNull)
         {
             Step();
         }
 
-        if (!_boardIsNull)
+        if (!_boardIsNull && !_isLocked)
         {
+            Debug.Log("Set");
             _board.Set(this);
         }
     }
@@ -129,10 +131,11 @@ public class Piece : MonoBehaviour
     private void Lock()
     {
         if (!_isLocked)
-        {
+        {   
             _board.Set(this);
             _board.ClearLines();
             _isLocked = true;
+            Debug.Log("Locked");
         }
     }
 

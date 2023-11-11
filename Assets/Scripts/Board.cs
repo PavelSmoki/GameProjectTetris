@@ -24,17 +24,12 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         _tilemap = GetComponentInChildren<Tilemap>();
-        _activePiece = GetComponentInChildren<Piece>();
+        _activePiece = GetComponent<Piece>();
 
         for (var i = 0; i < _tetrominoes.Length; i++)
         {
             _tetrominoes[i].Initialize();
         }
-    }
-
-    private void Start()
-    {
-        
     }
 
     public void SpawnPiece(int index)
