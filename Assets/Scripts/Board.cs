@@ -6,6 +6,7 @@ public class Board : MonoBehaviour
     private Tilemap _tilemap;
     private Piece _activePiece;
 
+    [SerializeField] private Ghost _ghost;
     [SerializeField] private TetrominoData[] _tetrominoes;
     [SerializeField] private Vector3Int _spawnPosition = new(-1, 8, 0);
     
@@ -33,15 +34,15 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
-        SpawnPiece();
+        
     }
 
-    public void SpawnPiece()
+    public void SpawnPiece(int index)
     {
-        var random = Random.Range(0, _tetrominoes.Length);
-        var data = _tetrominoes[random];
-
+        var data = _tetrominoes[index];
+        
         _activePiece.Initialize(this, _spawnPosition, data);
+        _ghost.Initialize(_activePiece);
 
         if (IsValidPosition(_activePiece, _spawnPosition))
         {

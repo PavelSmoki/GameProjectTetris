@@ -16,10 +16,18 @@ public class Piece : MonoBehaviour
     private float _stepTime;
     private float _moveTime;
     private float _lockTime;
+    private bool _boardIsNull = true;
+    private bool _isLocked;
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
         _board = board;
+        if (_board != null)
+        {
+            _boardIsNull = false;
+        }
+
+        _isLocked = false;
         _rotationIndex = 0;
 
         Data = data;
@@ -39,11 +47,14 @@ public class Piece : MonoBehaviour
 
     private void Update()
     {
-        _board.Clear(this);
-        
+        if (!_boardIsNull)
+        {
+            _board.Clear(this);
+        }
+
         _lockTime += Time.deltaTime;
 
-        
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
             Rotate(-1);
@@ -52,22 +63,26 @@ public class Piece : MonoBehaviour
         {
             Rotate(1);
         }
-        
-        if (Input.GetKeyDown(KeyCode.Space))
+
+        if (Input.GetKeyDown(KeyCode.F))
         {
             HardDrop();
         }
+
         if (Time.time > _moveTime)
         {
             HandleMoveInputs();
         }
-        
+
         if (Time.time > _stepTime)
         {
             Step();
         }
 
-        _board.Set(this);
+        if (!_boardIsNull)
+        {
+            _board.Set(this);
+        }
     }
 
     private void HandleMoveInputs()
@@ -79,7 +94,7 @@ public class Piece : MonoBehaviour
                 _stepTime = Time.time + _stepDelay;
             }
         }
-        
+
         if (Input.GetKey(KeyCode.A))
         {
             Move(Vector2Int.left);
@@ -93,9 +108,9 @@ public class Piece : MonoBehaviour
     private void Step()
     {
         _stepTime = Time.time + _stepDelay;
-        
+
         Move(Vector2Int.down);
-        
+
         if (_lockTime >= _lockDelay)
         {
             Lock();
@@ -113,19 +128,29 @@ public class Piece : MonoBehaviour
 
     private void Lock()
     {
-        _board.Set(this);
-        _board.ClearLines();
-        _board.SpawnPiece();
+        if (!_isLocked)
+        {
+            _board.Set(this);
+            _board.ClearLines();
+            _isLocked = true;
+        }
     }
 
     private bool Move(Vector2Int translation)
     {
+        var valid = false;
+
+        if (_isLocked) return false;
+
         var newPosition = Position;
         newPosition.x += translation.x;
         newPosition.y += translation.y;
 
-        var valid = _board.IsValidPosition(this, newPosition);
-        
+        if (!_boardIsNull)
+        {
+            valid = _board.IsValidPosition(this, newPosition);
+        }
+
         if (valid)
         {
             Position = newPosition;
@@ -139,10 +164,10 @@ public class Piece : MonoBehaviour
     private void Rotate(int direction)
     {
         var originalRotation = _rotationIndex;
-        
+
         _rotationIndex = Wrap(_rotationIndex + direction, 0, 4);
         ApplyRotationMatrix(direction);
-        
+
         if (!TestWallKicks(_rotationIndex, direction))
         {
             _rotationIndex = originalRotation;
@@ -153,7 +178,7 @@ public class Piece : MonoBehaviour
     private void ApplyRotationMatrix(int direction)
     {
         var matrix = global::Data.RotationMatrix;
-        
+
         for (var i = 0; i < Cells.Length; i++)
         {
             Vector3 cell = Cells[i];

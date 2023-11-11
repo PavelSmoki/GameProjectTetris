@@ -5,16 +5,26 @@ public class Ghost : MonoBehaviour
 {
     [SerializeField] private Tile _tile;
     [SerializeField] private Board _mainBoard;
-    [SerializeField] private Piece _trackingPiece;
 
+    private Piece _trackingPiece;
     private Tilemap _tilemap;
     private Vector3Int[] _cells;
     private Vector3Int _position;
+    private bool _isTrackingPieceNull = true;
+
+    public void Initialize(Piece piece)
+    {
+        _trackingPiece = piece;
+    }
 
     private void Awake()
     {
         _tilemap = GetComponentInChildren<Tilemap>();
         _cells = new Vector3Int[4];
+        if (_trackingPiece != null)
+        {
+            _isTrackingPieceNull = false;
+        }
     }
 
     private void LateUpdate()
@@ -27,6 +37,11 @@ public class Ghost : MonoBehaviour
 
     private void Clear()
     {
+        if (!_isTrackingPieceNull)
+        {
+            return;
+        }
+        
         foreach (var cell in _cells)
         {
             var tilePosition = cell + _position;
@@ -36,13 +51,24 @@ public class Ghost : MonoBehaviour
 
     private void Copy()
     {
-        for (var i = 0; i < _cells.Length; i++) {
+        if (_isTrackingPieceNull)
+        {
+            return;
+        }
+        
+        for (var i = 0; i < _cells.Length; i++)
+        {
             _cells[i] = _trackingPiece.Cells[i];
         }
     }
 
     private void Drop()
     {
+        if (_isTrackingPieceNull)
+        {
+            return;
+        }
+        
         var position = _trackingPiece.Position;
 
         var current = position.y;
@@ -54,9 +80,12 @@ public class Ghost : MonoBehaviour
         {
             position.y = row;
 
-            if (_mainBoard.IsValidPosition(_trackingPiece, position)) {
+            if (_mainBoard.IsValidPosition(_trackingPiece, position))
+            {
                 _position = position;
-            } else {
+            }
+            else
+            {
                 break;
             }
         }
@@ -66,11 +95,15 @@ public class Ghost : MonoBehaviour
 
     private void Set()
     {
+        if (_isTrackingPieceNull)
+        {
+            return;
+        }
+        
         foreach (var cell in _cells)
         {
             var tilePosition = cell + _position;
             _tilemap.SetTile(tilePosition, _tile);
         }
     }
-
 }
