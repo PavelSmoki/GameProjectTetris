@@ -1229,7 +1229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e47a935a1464c0a97beea13d267de62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _board: {fileID: 1887623656}
+  _behaviourDelay: 1
 --- !u!4 &927614672
 Transform:
   m_ObjectHideFlags: 0
@@ -2649,6 +2649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6570178d836e8642a13a0b983600cf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ai: {fileID: 927614671}
   _stepDelay: 1
   _moveDelay: 0.1
   _lockDelay: 0.5
@@ -2681,6 +2682,7 @@ MonoBehaviour:
   - Tile: {fileID: 11400000, guid: 66df2645ff909154b9c8f7c006a6af32, type: 2}
     Tetromino: 6
   _spawnPosition: {x: -1, y: 8, z: 0}
+  _ai: {fileID: 927614671}
 --- !u!1 &2049965490
 GameObject:
   m_ObjectHideFlags: 0

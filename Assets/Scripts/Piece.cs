@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -10,6 +9,7 @@ public class Piece : MonoBehaviour
     public Vector3Int[] Cells { get; private set; }
     public Vector3Int Position { get; private set; }
 
+    [SerializeField] private Ai _ai;
     [SerializeField] private float _stepDelay = 1f;
     [SerializeField] private float _moveDelay = 0.1f;
     [SerializeField] private float _lockDelay = 0.5f;
@@ -27,7 +27,7 @@ public class Piece : MonoBehaviour
         {
             _boardIsNull = false;
         }
-
+        
         _isLocked = false;
         _rotationIndex = 0;
 
@@ -82,7 +82,6 @@ public class Piece : MonoBehaviour
 
         if (!_boardIsNull && !_isLocked)
         {
-            Debug.Log("Set");
             _board.Set(this);
         }
     }
@@ -119,7 +118,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    private void HardDrop()
+    public void HardDrop()
     {
         while (Move(Vector2Int.down))
         {
@@ -135,11 +134,12 @@ public class Piece : MonoBehaviour
             _board.Set(this);
             _board.ClearLines();
             _isLocked = true;
+            _ai.LockAi();
             Debug.Log("Locked");
         }
     }
 
-    private bool Move(Vector2Int translation)
+    public bool Move(Vector2Int translation)
     {
         var valid = false;
 
@@ -164,7 +164,7 @@ public class Piece : MonoBehaviour
         return valid;
     }
 
-    private void Rotate(int direction)
+    public void Rotate(int direction)
     {
         var originalRotation = _rotationIndex;
 

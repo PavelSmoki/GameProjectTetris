@@ -9,7 +9,8 @@ public class Board : MonoBehaviour
     [SerializeField] private Ghost _ghost;
     [SerializeField] private TetrominoData[] _tetrominoes;
     [SerializeField] private Vector3Int _spawnPosition = new(-1, 8, 0);
-    
+    [SerializeField] private Ai _ai;
+ 
     public Vector2Int BoardSize { get; } = new(10, 20);
 
     private RectInt Bounds
@@ -37,6 +38,7 @@ public class Board : MonoBehaviour
         var data = _tetrominoes[index];
         
         _activePiece.Initialize(this, _spawnPosition, data);
+        _ai.Initialize(_activePiece);       
         _ghost.Initialize(_activePiece);
 
         if (IsValidPosition(_activePiece, _spawnPosition))
