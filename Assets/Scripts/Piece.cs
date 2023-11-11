@@ -8,17 +8,18 @@ public class Piece : MonoBehaviour
     public TetrominoData Data { get; private set; }
     public Vector3Int[] Cells { get; private set; }
     public Vector3Int Position { get; private set; }
-
-    [SerializeField] private Ai _ai;
+    
     [SerializeField] private float _stepDelay = 1f;
     [SerializeField] private float _moveDelay = 0.1f;
     [SerializeField] private float _lockDelay = 0.5f;
+    [SerializeField] private float _behaviourDelay = 1f;
 
     private float _stepTime;
     private float _moveTime;
     private float _lockTime;
     private bool _boardIsNull = true;
     private bool _isLocked;
+    private float _delay;
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
@@ -54,27 +55,40 @@ public class Piece : MonoBehaviour
         }
 
         _lockTime += Time.deltaTime;
-
-
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (!_boardIsNull && !_isLocked)
         {
-            Rotate(-1);
-        }
-        else if (Input.GetKeyDown(KeyCode.E))
-        {
-            Rotate(1);
-        }
+            _delay += Time.deltaTime;
+            if (_behaviourDelay <= _delay)
+            {
+                _delay = 0;
+                var random = Random.Range(0, 7);
+                switch (random)
+                {
+                    case 0:
+                        Rotate(1);
+                        break;
+                    case 1:
+                        Rotate(-1);
+                        break;
+                    case 2 or 5 or 6:
+                        Move(Vector2Int.left);
+                        break;
+                    case 3:
+                        Move(Vector2Int.right);
+                        break;
+                    case 4:
+                    {
+                        if (Random.Range(0, 2) == 1)
+                        {
+                            HardDrop();
+                        }
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            HardDrop();
+                        break;
+                    }
+                }
+            }
         }
-
-        if (Time.time > _moveTime)
-        {
-            HandleMoveInputs();
-        }
-
+        
         if (Time.time > _stepTime && !_boardIsNull)
         {
             Step();
@@ -118,7 +132,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    public void HardDrop()
+    private void HardDrop()
     {
         while (Move(Vector2Int.down))
         {
@@ -134,12 +148,11 @@ public class Piece : MonoBehaviour
             _board.Set(this);
             _board.ClearLines();
             _isLocked = true;
-            _ai.LockAi();
             Debug.Log("Locked");
         }
     }
 
-    public bool Move(Vector2Int translation)
+    private bool Move(Vector2Int translation)
     {
         var valid = false;
 
@@ -164,7 +177,7 @@ public class Piece : MonoBehaviour
         return valid;
     }
 
-    public void Rotate(int direction)
+    private void Rotate(int direction)
     {
         var originalRotation = _rotationIndex;
 
