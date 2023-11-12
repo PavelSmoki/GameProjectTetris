@@ -6,8 +6,9 @@ public class Board : MonoBehaviour
     private Tilemap _tilemap;
     private Piece _activePiece;
     
+    [SerializeField] private Canvas _gameOverCanvas;
     [SerializeField] private TetrominoData[] _tetrominoes;
-    [SerializeField] private Vector3Int _spawnPosition = new(-1, 8, 0);
+    private readonly Vector3Int _spawnPosition = new(-1, 8, 0);
 
     public Vector2Int BoardSize { get; } = new(10, 20);
 
@@ -50,6 +51,8 @@ public class Board : MonoBehaviour
     private void GameOver()
     {
         _tilemap.ClearAllTiles();
+        _gameOverCanvas.gameObject.SetActive(true);
+        Time.timeScale = 0;
     }
 
     public void Set(Piece piece)

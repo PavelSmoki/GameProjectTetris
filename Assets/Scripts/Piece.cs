@@ -69,10 +69,10 @@ public class Piece : MonoBehaviour
                     case 1:
                         Rotate(-1);
                         break;
-                    case 2 or 5 or 6:
+                    case 2 or 5:
                         Move(Vector2Int.left);
                         break;
-                    case 3:
+                    case 3 or 6:
                         Move(Vector2Int.right);
                         break;
                     case 4:
