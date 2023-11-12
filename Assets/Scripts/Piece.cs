@@ -54,7 +54,39 @@ public class Piece : MonoBehaviour
 
         _lockTime += Time.deltaTime;
         
+        if (!_boardIsNull && !_isLocked)
+        {
+            _delay += Time.deltaTime;
+            if (_behaviourDelay <= _delay)
+            {
+                _delay = 0;
+                var random = Random.Range(0, 7);
+                switch (random)
+                {
+                    case 0:
+                        Rotate(1);
+                        break;
+                    case 1:
+                        Rotate(-1);
+                        break;
+                    case 2 or 5 or 6:
+                        Move(Vector2Int.left);
+                        break;
+                    case 3:
+                        Move(Vector2Int.right);
+                        break;
+                    case 4:
+                    {
+                        if (Random.Range(0, 2) == 1)
+                        {
+                            HardDrop();
+                        }
         
+                        break;
+                    }
+                }
+            }
+        }
         
         if (Time.time > _stepTime && !_boardIsNull)
         {
